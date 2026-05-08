@@ -1,0 +1,10 @@
+{
+  "apiKey": "placeholder",
+  "authDomain": "placeholder-app.firebaseapp.com",
+  "projectId": "placeholder-app",
+  "storageBucket": "placeholder-app.firebasestorage.app",
+  "messagingSenderId": "000000000000",
+  "appId": "1:000000000000:web:0000000000000000000000",
+  "measurementId": "G-0000000000",
+  "firestoreDatabaseId": "(default)"
+}

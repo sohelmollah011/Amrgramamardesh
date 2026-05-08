@@ -1,0 +1,93 @@
+{
+  "entities": {
+    "Member": {
+      "title": "Member",
+      "description": "Information about an organization member",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "memberId": { "type": "string", "description": "Human readable unique ID" },
+        "fullName": { "type": "string" },
+        "fatherName": { "type": "string" },
+        "motherName": { "type": "string" },
+        "dob": { "type": "string", "format": "date" },
+        "bloodGroup": { "type": "string" },
+        "phone": { "type": "string" },
+        "address": {
+          "type": "object",
+          "properties": {
+            "village": { "type": "string" },
+            "postOffice": { "type": "string" },
+            "union": { "type": "string" },
+            "upazila": { "type": "string" },
+            "district": { "type": "string" }
+          }
+        },
+        "profession": { "type": "string" },
+        "documentUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "active", "suspended"] },
+        "role": { "type": "string", "enum": ["member", "admin"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "fullName", "phone", "status", "role", "createdAt"]
+    },
+    "Saving": {
+      "title": "Saving",
+      "description": "Records of member savings contributions",
+      "type": "object",
+      "properties": {
+        "memberId": { "type": "string" },
+        "amount": { "type": "number" },
+        "type": { "type": "string", "enum": ["weekly", "monthly"] },
+        "date": { "type": "string", "format": "date-time" },
+        "collectedBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["memberId", "amount", "type", "date", "createdAt"]
+    },
+    "Notice": {
+      "title": "Notice",
+      "description": "Announcements from administration",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "priority": { "type": "string", "enum": ["low", "medium", "high"] },
+        "postedBy": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "content", "createdAt"]
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Support messages between members and admins",
+      "type": "object",
+      "properties": {
+        "chatId": { "type": "string", "description": "The UID of the member this chat is with" },
+        "senderId": { "type": "string" },
+        "text": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["chatId", "senderId", "text", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/members/{uid}": {
+      "schema": "Member",
+      "description": "Member profile data indexed by UID"
+    },
+    "/savings/{savingId}": {
+      "schema": "Saving",
+      "description": "All savings records"
+    },
+    "/notices/{noticeId}": {
+      "schema": "Notice",
+      "description": "Official announcements"
+    },
+    "/chats/{memberUid}/messages/{messageId}": {
+      "schema": "Message",
+      "description": "Direct messages for support"
+    }
+  }
+}

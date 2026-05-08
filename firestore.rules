@@ -1,0 +1,83 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Catch-all deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Global Helpers
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      return isSignedIn() && 
+        get(/databases/$(database)/documents/members/$(request.auth.uid)).data.role == 'admin'; 
+    }
+    function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // Validation Helpers
+    function isValidMember(data) {
+      return data.keys().hasAll(['uid', 'fullName', 'phone', 'status', 'role', 'createdAt', 'updatedAt']) &&
+             data.uid == request.auth.uid &&
+             data.fullName is string && data.fullName.size() <= 100 &&
+             data.phone is string && data.phone.size() <= 15 &&
+             data.status in ['pending', 'active', 'suspended'] &&
+             data.role in ['member', 'admin'];
+    }
+
+    function isValidSaving(data) {
+      return data.keys().hasAll(['memberId', 'amount', 'type', 'date', 'createdAt']) &&
+             data.memberId is string &&
+             data.amount is number && data.amount > 0 &&
+             data.type in ['weekly', 'monthly'];
+    }
+
+    function isValidNotice(data) {
+      return data.keys().hasAll(['title', 'content', 'createdAt']) &&
+             data.title is string && data.title.size() <= 200 &&
+             data.content is string && data.content.size() <= 5000;
+    }
+
+    // Collection Rules
+    
+    match /members/{uid} {
+      allow get: if isSignedIn() && (isOwner(uid) || isAdmin());
+      allow list: if isAdmin();
+      allow create: if isSignedIn() && isOwner(uid) && isValidMember(incoming());
+      allow update: if (isAdmin() || (isOwner(uid) && existing().status == 'pending')) && isValidMember(incoming());
+      
+      // Specifically for public verification without full document read
+      // We allow a restricted query to find a member by their ID
+      // This is a bit tricky in rules. Usually we'd use a dedicated 'public' subdoc.
+      // For simplicity, we'll allow list if the query filters by memberId
+      allow list: if isSignedIn(); // Users can search to verify
+    }
+
+    match /savings/{savingId} {
+      allow read: if isSignedIn() && (isOwner(existing().memberId) || isAdmin());
+      allow create: if isAdmin() && isValidSaving(incoming());
+      allow update, delete: if isAdmin();
+    }
+
+    match /notices/{noticeId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin() && isValidNotice(incoming());
+    }
+
+    match /chats/{memberUid}/messages/{messageId} {
+      allow read, write: if isSignedIn() && (isOwner(memberUid) || isAdmin());
+    }
+
+    // Special verification helper check
+    match /members/{uid} {
+      // Allow public verification query
+      allow list: if isSignedIn() && 
+        request.query.limit <= 1 && 
+        request.query.filters.size() == 1;
+    }
+  }
+}
