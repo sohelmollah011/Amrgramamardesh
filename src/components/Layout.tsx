@@ -36,7 +36,7 @@ export default function Layout({ children, userRole = 'member' }: LayoutProps) {
       {/* Header */}
       <header className="bg-white border-b border-gray-100 sticky top-0 z-50 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="কাহেনা যুব সংগঠন" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" />
+          <img src="/logo.svg" alt="কাহেনা যুব সংগঠন" className="w-10 h-10 object-contain" referrerPolicy="no-referrer" />
           <h1 className="text-blue-900 font-bold text-lg leading-tight">
             কাহেনা যুব সংগঠন
           </h1>

@@ -38,7 +38,7 @@ export default function MemberID({ member }: MemberIDProps) {
         {/* Header */}
         <div className="flex justify-between items-start relative z-10 mb-4">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-white p-0.5" referrerPolicy="no-referrer" />
+            <img src="/logo.svg" alt="Logo" className="w-8 h-8 rounded-lg object-contain bg-white p-0.5" referrerPolicy="no-referrer" />
             <div className="flex flex-col">
               <span className="text-[10px] font-bold tracking-widest leading-none opacity-80">আমার গ্রাম আমার দেশ</span>
               <span className="text-xs font-black italic">কাহেনা যুব সংগঠন</span>

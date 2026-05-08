@@ -55,7 +55,7 @@ export default function Login() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
       <div className="w-full max-w-sm bg-white rounded-[2.5rem] p-10 shadow-sm border border-gray-100 text-center">
-        <img src="/logo.png" alt="Logo" className="w-24 h-24 mx-auto mb-6 object-contain" referrerPolicy="no-referrer" />
+        <img src="/logo.svg" alt="Logo" className="w-24 h-24 mx-auto mb-6 object-contain" referrerPolicy="no-referrer" />
         <h1 className="text-2xl font-bold text-blue-900 mb-2 italic">
           আমার গ্রাম আমার দেশ
         </h1>

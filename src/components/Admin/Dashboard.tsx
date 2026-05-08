@@ -11,7 +11,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     const q = query(collection(db, 'members'), orderBy('createdAt', 'desc'));
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      setMembers(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Member)));
+      setMembers(snapshot.docs.map(doc => ({ ...doc.data(), uid: doc.id } as Member)));
     });
     return () => unsubscribe();
   }, []);
